@@ -19,7 +19,7 @@ public class LoginDetailsServiceImpl implements ILoginDetailsService {
 	ILoginDetailsDao loginDetail;
 	
 	@Override
-	public List<LoginDetails> getLoginDetails(String uname, String pass) {
+	public Object[] getLoginDetails(String uname, String pass) {
 		// TODO Auto-generated method stub
 		return loginDetail.getLoginDetails(uname, pass);
 	}

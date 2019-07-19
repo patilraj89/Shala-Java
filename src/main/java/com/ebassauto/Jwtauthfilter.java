@@ -9,6 +9,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -16,12 +17,19 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.ebassauto.util.JwtTokenUtil;
+
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureException;
 
+
 public class Jwtauthfilter extends OncePerRequestFilter {
+	
+	@Autowired
+	private JwtTokenUtil jwtTokenUtil;
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -52,11 +60,20 @@ public class Jwtauthfilter extends OncePerRequestFilter {
 						authority.add(new SimpleGrantedAuthority(role));
 
 					// Creating an authentication object using the claims.
-					Myauthtoken authenticationTkn= new Myauthtoken(user, null, authority);
-					// Storing the authentication object in the security context.
-					context.setAuthentication(authenticationTkn);
+					if(jwtTokenUtil.validateToken(bearerTkn)) {
+						Myauthtoken authenticationTkn= new Myauthtoken(user, null, authority);
+						// Storing the authentication object in the security context.
+						context.setAuthentication(authenticationTkn);
+					}
+					
 				} catch (SignatureException e) {
 					throw new ServletException("Invalid token.");
+				}catch (IllegalArgumentException e) {
+					throw new ServletException("Unable to get JWT Token.");
+					//System.out.println("Unable to get JWT Token");
+				}catch (ExpiredJwtException e) {
+					throw new ServletException("JWT Token has expired.");
+					//System.out.println("JWT Token has expired");
 				}
 			}
 
@@ -64,6 +81,8 @@ public class Jwtauthfilter extends OncePerRequestFilter {
 			context.setAuthentication(null);
 		} catch(AuthenticationException ex) {
 			throw new ServletException("Authentication exception.");
-		}
-	}
+		}		
+		
+	}	
+	
 }

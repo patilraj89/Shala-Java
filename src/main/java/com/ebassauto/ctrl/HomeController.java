@@ -20,13 +20,13 @@ public class HomeController {
 	@GetMapping("/getDateTime")
 	private Date getLocalDt() {
 		
-		SimpleMailMessage msg = new SimpleMailMessage();
-        msg.setTo("prdrek@gmail.com");
-
-        msg.setSubject("Testing from Spring Boot");
-        msg.setText("Hello World \n Spring Boot Email");
-
-        javaMailSender.send(msg);
+//		SimpleMailMessage msg = new SimpleMailMessage();
+//        msg.setTo("prdrek@gmail.com");
+//
+//        msg.setSubject("Testing from Spring Boot");
+//        msg.setText("Hello World \n Spring Boot Email");
+//
+//        javaMailSender.send(msg);
 		
 		
 		return new Date();

@@ -6,6 +6,6 @@ import com.ebassauto.model.LoginDetails;
 
 public interface ILoginDetailsDao {
 	
-	public List<LoginDetails> getLoginDetails(String uname,String pass);
+	public Object[] getLoginDetails(String uname,String pass);
 
 }
